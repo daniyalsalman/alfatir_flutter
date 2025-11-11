@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "379961632699",
+    "project_id": "alfatir-44ad7",
+    "storage_bucket": "alfatir-44ad7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379961632699:android:a67a51c6aa49851d6b469e",
+        "android_client_info": {
+          "package_name": "com.example.alfatar_proj"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQuFLDHb3GiJJyu2brGPTMsbqgrlyp96Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379961632699:android:f6a7018fe45be96f6b469e",
+        "android_client_info": {
+          "package_name": "com.example.alfatir_proj"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQuFLDHb3GiJJyu2brGPTMsbqgrlyp96Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
