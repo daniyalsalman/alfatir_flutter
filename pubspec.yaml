@@ -64,7 +64,17 @@ flutter:
   assets:
      - assets/images/al_fatir_logo.png   
      - assets/lottie/al_fatir_logo_animation.json   
-
+     - assets/content/quran.json
+     - assets/content/quran_en.json
+     - assets/content/quran_ur.json
+     - assets/content/quran_tr.json
+     - assets/content/quran_bn.json
+     - assets/content/quran_es.json
+     - assets/content/quran_fr.json
+     - assets/content/quran_id.json
+     - assets/content/quran_ru.json
+     - assets/content/quran_sv.json
+     - assets/content/quran_zh.json
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
