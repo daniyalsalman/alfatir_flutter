@@ -75,6 +75,21 @@ flutter:
      - assets/content/quran_ru.json
      - assets/content/quran_sv.json
      - assets/content/quran_zh.json
+     - assets/content/ahmed.json
+     - assets/content/sunan_ibn_majah.json
+     - assets/content/sunan_an_nasai.json
+     - assets/content/sunan_abi_dawud.json
+     - assets/content/shamail_muhammadiyah.json
+     - assets/content/sahih_muslim.json
+     - assets/content/sahih_bukhari.json
+     - assets/content/riyad_assalihin.json
+     - assets/content/mishkat_almasabih.json
+     - assets/content/malik.json
+     - assets/content/jami_tirmidhi.json
+     - assets/content/darimi.json
+     - assets/content/bulugh_almaram.json
+     - assets/content/aladab_almufrad.json
+     - assets/content/ahmed.json
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
