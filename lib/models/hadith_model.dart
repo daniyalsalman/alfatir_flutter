@@ -27,16 +27,16 @@ class Hadith {
         englishText = json['english'];
       } else if (json['english'] is Map) {
         englishText = json['english']['text'] ?? '';
-        narrator = json['english']['narrator'];
+        narrator = json['english']['narrator'] ?? '';
       }
     }
 
     return Hadith(
-      id: json['id'] ?? -1,
-      idInBook: json['idInBook'],
-      chapterId: json['chapterId'],
-      bookId: json['bookId'],
-      arabic: json['arabic'] ?? '',
+      id: int.tryParse(json['id']?.toString() ?? json['number']?.toString() ?? '-1') ?? -1,
+      idInBook: int.tryParse(json['idInBook']?.toString() ?? json['In-book reference']?.toString() ?? ''),
+      chapterId: int.tryParse(json['chapterId']?.toString() ?? ''),
+      bookId: int.tryParse(json['bookId']?.toString() ?? ''),
+      arabic: json['arabic'] ?? json['text'] ?? '',
       englishText: englishText,
       narrator: narrator,
     );

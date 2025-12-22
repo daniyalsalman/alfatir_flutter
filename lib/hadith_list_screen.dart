@@ -26,46 +26,54 @@ class _HadithListScreenState extends State<HadithListScreen> {
     loadHadiths();
   }
 
- Future<void> loadHadiths() async {
-  String jsonString = await rootBundle.loadString(widget.jsonPath);
-  final data = json.decode(jsonString);
+  Future<void> loadHadiths() async {
+    try {
+      String jsonString = await rootBundle.loadString(widget.jsonPath);
+      final data = json.decode(jsonString);
 
-  List<dynamic> hadithList = [];
+      List<dynamic> hadithList = [];
 
-  if (data is List) {
-    // Flat list (Sahih Bukhari, Muslim, Sunan)
-    hadithList = data;
-  } else if (data is Map) {
-    // Nested books (Riyad/Shamā’il)
-    if (data.containsKey("hadiths") && data["hadiths"] is List) {
-      hadithList = data["hadiths"];
-    } else if (data.containsKey("chapters") && data["chapters"] is List) {
-      for (var chapter in data["chapters"]) {
-        if (chapter.containsKey("hadiths") && chapter["hadiths"] is List) {
-          hadithList.addAll(chapter["hadiths"]);
+      if (data is List) {
+        // Flat list (Sahih Bukhari, Muslim, Sunan)
+        hadithList = data;
+      } else if (data is Map) {
+        // Nested books (Riyad/Shamā’il)
+        if (data.containsKey("hadiths") && data["hadiths"] is List) {
+          hadithList = data["hadiths"];
+        } else if (data.containsKey("chapters") && data["chapters"] is List) {
+          for (var chapter in data["chapters"]) {
+            if (chapter.containsKey("hadiths") && chapter["hadiths"] is List) {
+              hadithList.addAll(chapter["hadiths"]);
+            }
+          }
         }
       }
+
+      // Make sure we actually have a list
+      if (hadithList.isEmpty) {
+        print("Warning: No hadiths found in JSON file ${widget.jsonPath}");
+      }
+
+      setState(() {
+        hadiths = hadithList.map((e) {
+          if (e is Map<String, dynamic>) {
+            return Hadith.fromJson(e);
+          } else {
+            return Hadith(
+              id: -1,
+              arabic: e.toString(),
+              englishText: '',
+            );
+          }
+        }).toList();
+      });
+    } catch (e) {
+      print("Error loading hadiths: $e");
+      setState(() {
+        hadiths = [];
+      });
     }
   }
-
-  // Make sure we actually have a list
-  if (hadithList.isEmpty) {
-    print("Warning: No hadiths found in JSON file ${widget.jsonPath}");
-  }
-
-  setState(() {
-    hadiths = hadithList.map((e) {
-      if (e is Map<String, dynamic>) return Hadith.fromJson(e);
-      // fallback for any unexpected format
-      return Hadith(
-        id: -1,
-        arabic: e.toString(),
-        englishText: '',
-      );
-    }).toList();
-  });
-}
-
 
   @override
   Widget build(BuildContext context) {

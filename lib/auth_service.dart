@@ -25,23 +25,29 @@ final FirebaseFirestore firestore = FirebaseFirestore.instance;
   }
 
 
-Future<UserCredential> createAccount ({
-  required String e, //email
-  required String p, //password
+Future<UserCredential> createAccount({
+  required String email,
+  required String password,
 }) async {
-   final userCredential= await firebaseAuth.createUserWithEmailAndPassword(email: e, password: p);
+  // 1. Create the user in Firebase Auth
+  final userCredential = await firebaseAuth.createUserWithEmailAndPassword(
+    email: email,
+    password: password,
+  );
 
-final user=userCredential.user;
-if (user != null) {
+  final user = firebaseAuth.currentUser; // ensures we use the authenticated user
+
+  // 2. Only write to Firestore if user is not null
+  if (user != null) {
     await firestore.collection('Users').doc(user.uid).set({
-      'email': e,
+      'email': email,
       'createdAt': FieldValue.serverTimestamp(),
     });
-}
+  }
 
   return userCredential;
-
 }
+
 
 Future<void> signOut ()
 async {

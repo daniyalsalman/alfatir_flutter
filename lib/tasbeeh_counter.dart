@@ -4,10 +4,10 @@ class TasbeehCounter extends StatefulWidget {
   const TasbeehCounter({super.key});
 
   @override
-  State<TasbeehCounter> createState() => _TasbeehCounterState();
+  State<TasbeehCounter> createState() => TasbeehCounterState();
 }
 
-class _TasbeehCounterState extends State<TasbeehCounter> {
+class TasbeehCounterState extends State<TasbeehCounter> {
   String? selectedItem;
   int? selectedCount;
 

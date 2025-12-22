@@ -37,6 +37,12 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   lottie: ^3.3.2
+  country_state_city_picker: ^1.2.8
+  http: ^1.6.0
+  shared_preferences: ^2.5.4
+  flutter_local_notifications: ^19.5.0
+  timezone: ^0.10.1
+  android_alarm_manager_plus: ^5.0.0
 
 dev_dependencies:
   flutter_test:
