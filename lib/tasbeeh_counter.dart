@@ -91,7 +91,12 @@ class TasbeehCounterState extends State<TasbeehCounter> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Tasbeeh Counter"),
-        leading: const Icon(Icons.arrow_back),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Center(
         child: Column(
@@ -172,8 +177,8 @@ class _CounterState extends State<Counter> {
           content: Text("May Allah reward you"),
           actions: [
             TextButton(onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pop();
+              Navigator.pop(context);
+              Navigator.pop(context);
             }, child: Text("OK"))
           ],
         );

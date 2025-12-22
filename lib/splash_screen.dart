@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
+import 'app_routes.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -22,6 +24,16 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _controller.forward(); // start the animation
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.login,
+        );
+      }
+    });
+
   }
 
   @override
@@ -41,12 +53,11 @@ class _SplashScreenState extends State<SplashScreen>
             Lottie.asset(
               'assets/lottie/al_fatir_logo_animation.json',
               controller: _controller,
-              width: 200,
-              height: 200,
+              width: 450,
+              height: 450,
               fit: BoxFit.contain,
             ),
             const SizedBox(height: 20),
-            const Text("Al Fatir Project Splash Screen Testing"),
           ],
         ),
       ),

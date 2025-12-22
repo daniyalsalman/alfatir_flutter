@@ -189,11 +189,16 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
         prayerTimes = times;
       });
 
-      await _cacheData(selectedCountry!, selectedCity!, times);
-      await _scheduleNotifications(times);
-    } catch (_) {
+      try {
+        await _cacheData(selectedCountry!, selectedCity!, times);
+        await _scheduleNotifications(times);
+      } catch (e) {
+        debugPrint('Post-fetch error (cache/notification): $e');
+      }
+
+    } catch (e) {
       setState(() {
-        infoMessage = 'Failed to fetch. Showing cached data if available.';
+        infoMessage = 'Failed to fetch prayer times.';
       });
     } finally {
       setState(() {
@@ -201,6 +206,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
       });
     }
   }
+
 
   /* ---------------- UI ---------------- */
 

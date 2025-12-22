@@ -1,4 +1,5 @@
 import 'package:alfatir_proj/rag_chat_sreen.dart';
+import 'package:alfatir_proj/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'app_routes.dart';
@@ -44,6 +45,9 @@ class RouteGenerator {
 
       case AppRoutes.profile:
         return MaterialPageRoute(builder: (_) => ProfileScreen());
+
+      case AppRoutes.splash:
+        return MaterialPageRoute(builder: (_) => SplashScreen());
 
       default:
         return MaterialPageRoute(

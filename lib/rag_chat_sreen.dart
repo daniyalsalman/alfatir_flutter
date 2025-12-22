@@ -148,9 +148,16 @@ class RagChatScreenState extends State<RagChatScreen> {
 
   // ------------------ SEND MESSAGE ------------------
   Future<void> _sendMessage() async {
-    if (_controller.text.trim().isEmpty || _sessionId == null) return;
+    if (_controller.text.trim().isEmpty) return;
+
+    if (_sessionId == null) {
+      await _createNewSession();
+    }
+
+    if (_sessionId == null) return;
 
     final userMessage = _controller.text.trim();
+
     setState(() {
       _messages.add({
         'user': userMessage,
@@ -160,37 +167,38 @@ class RagChatScreenState extends State<RagChatScreen> {
       _controller.clear();
       _loading = true;
     });
+
     _scrollToBottom();
 
     try {
       final resp = await http.post(
         Uri.parse('$baseUrl/chat'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'message': userMessage, 'session_id': _sessionId}),
+        body: jsonEncode({
+          'message': userMessage,
+          'session_id': _sessionId,
+        }),
       );
 
       String botResponse = '';
+
       if (resp.statusCode == 200) {
         final data = jsonDecode(resp.body);
-        if (data is Map && data.containsKey('response')) {
-          botResponse = data['response']?.toString().trim() ?? '';
-        } else {
-          botResponse = resp.body.replaceAll('"', '').trim();
-        }
+        botResponse = data['response']?.toString() ?? '';
       } else {
-        botResponse = 'Error: Failed to get response';
+        botResponse = 'Server error';
       }
 
       setState(() {
         _messages.last['bot'] = botResponse;
         _loading = false;
       });
-      _scrollToBottom();
     } catch (e) {
-      debugPrint('Error sending message: $e');
+      debugPrint('Send error: $e');
       setState(() => _loading = false);
     }
   }
+
 
   // ------------------ SCROLL ------------------
   void _scrollToBottom() {
@@ -306,7 +314,7 @@ class RagChatScreenState extends State<RagChatScreen> {
                     ? const CircularProgressIndicator()
                     : IconButton(
                         icon: const Icon(Icons.send),
-                        onPressed: _sendMessage,
+                        onPressed:  _sessionId == null ? null : _sendMessage,
                       ),
               ],
             ),

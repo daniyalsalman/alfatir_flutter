@@ -2,6 +2,7 @@
 // import 'package:alfatir_proj/sign_in_screen.dart';
 // import 'package:alfatir_proj/auth_test.dart';
 // import 'package:alfatir_proj/splash_screen.dart';
+import 'package:alfatir_proj/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -19,6 +20,8 @@ import 'route_generator.dart';
 // import 'package:alfatir_proj/surahs_main.dart';
 // import 'package:alfatir_proj/hadith_main.dart';
 
+final ValueNotifier<ThemeMode> themeNotifier =
+ValueNotifier(ThemeMode.light);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,11 +36,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-  debugShowCheckedModeBanner: false,
-  initialRoute: AppRoutes.initialAuth,
-  onGenerateRoute: RouteGenerator.onGenerateRoute,
-);
-
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: themeNotifier,
+      builder: (context, mode, _) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: ThemeData.dark(),
+          themeMode: mode,
+          initialRoute: AppRoutes.home,
+          onGenerateRoute: RouteGenerator.onGenerateRoute,
+        );
+      },
+    );
   }
 }

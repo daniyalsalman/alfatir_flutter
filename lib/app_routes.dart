@@ -1,5 +1,6 @@
 class AppRoutes {
-  static const initialAuth = '/';
+  static const splash = '/';
+  static const initialAuth = '/auth';
   static const login = '/login';
   static const home = '/home';
   static const hadith = '/hadith';

@@ -58,6 +58,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: _login,
                 child: const Text('Login'),
               ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, AppRoutes.initialAuth);
+                },
+                child: const Text("Don't have an account? Sign Up"),
+              ),
             ],
           ),
         ),
