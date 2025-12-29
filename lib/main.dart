@@ -1,34 +1,23 @@
-// import 'package:alfatir_proj/hadith_main.dart';
-// import 'package:alfatir_proj/sign_in_screen.dart';
-// import 'package:alfatir_proj/auth_test.dart';
-// import 'package:alfatir_proj/splash_screen.dart';
-import 'package:alfatir_proj/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'app_routes.dart';
-import 'route_generator.dart';
-// import 'home_screen.dart';
-// import 'initial_auth_screen.dart';
-// import 'login_screen.dart';
-// import 'profile_screen.dart';
-// import 'package:alfatir_proj/prayer_times_screen.dart';
-// import 'package:alfatir_proj/tasbeeh_counter.dart';
-// import 'auth_test.dart';
-// import 'splash_screen.dart';
-// import 'tasbeeh_counter.dart';
-// import 'package:alfatir_proj/surahs_main.dart';
-// import 'package:alfatir_proj/hadith_main.dart';
+import 'package:alfatir_proj/theme/app_theme.dart';
+import 'package:alfatir_proj/route_generator.dart';
+import 'package:alfatir_proj/app_routes.dart';
+import 'firebase_options.dart'; // <--- 1. Import this file
 
-final ValueNotifier<ThemeMode> themeNotifier =
-ValueNotifier(ThemeMode.light);
+// Global Notifier
+final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.system);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 2. Use the generated options
+  // This tells Flutter: "If I am on Web, use the Web keys. If Android, use Android keys."
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp( MyApp());
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -38,12 +27,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: themeNotifier,
-      builder: (context, mode, _) {
+      builder: (context, currentMode, child) {
         return MaterialApp(
+          title: 'Al-Fatir',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
-          darkTheme: ThemeData.dark(),
-          themeMode: mode,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: currentMode,
           initialRoute: AppRoutes.splash,
           onGenerateRoute: RouteGenerator.onGenerateRoute,
         );

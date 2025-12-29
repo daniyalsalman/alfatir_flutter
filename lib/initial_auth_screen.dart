@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class InitialAuthScreen extends StatefulWidget {
-  const InitialAuthScreen({Key? key}) : super(key: key);
+  const InitialAuthScreen({super.key});
 
   @override
   State<InitialAuthScreen> createState() => _InitialAuthScreenState();

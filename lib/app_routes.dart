@@ -1,3 +1,5 @@
+
+
 class AppRoutes {
   static const splash = '/';
   static const initialAuth = '/auth';
@@ -9,5 +11,9 @@ class AppRoutes {
   static const tasbeehCounter = '/tasbeeh';
   static const profile = '/profile';
   static const ragChat = '/rag-chat';
-
+  static const zakat = '/zakat';
+  static const qibla = '/qibla';
+  static const namesOfAllah = '/names-of-allah';
+  static const hijriCalendar = '/hijri-calendar';
+  static const forgotPassword = '/forgot-password';
 }

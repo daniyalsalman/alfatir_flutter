@@ -1,78 +1,53 @@
+// lib/services/hadith_service.dart
+
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import '../models/hadith_model.dart';
 
 class HadithService {
-  // List of special books requiring custom parsing
-  static const List<String> _specialBooks = [
-    'jami_tirmidhi.json',
-    'sunan_abi_dawud.json',
-    'sunan_ibn_majah.json',
-    'sunan_an_nasai.json',
-    'sahih_bukhari.json',
-    'sahih_muslim.json',
-  ];
+  /// Entry function to load a hadith book
+  Future<List<Hadith>> loadHadithBook(String jsonPath) async {
+    try {
+      // 1. Load the JSON string
+      // Note: jsonPath coming from main screen includes 'assets/content/', 
+      // but if it doesn't, we add it. 
+      final fullPath = jsonPath.startsWith('assets/') ? jsonPath : 'assets/content/$jsonPath';
+      final String jsonString = await rootBundle.loadString(fullPath);
+      
+      // 2. Decode JSON
+      final dynamic data = json.decode(jsonString);
 
-  /// Helper function to check if a book is special
-  bool isSpecialBook(String bookName) {
-    return _specialBooks.contains(bookName);
-  }
+      List<Hadith> hadiths = [];
 
-  /// Parsing function for special books
-  List<Hadith> parseSpecialBook(Map<String, dynamic> json) {
-    final List<Hadith> hadiths = [];
-
-    // Handle nested fields and alternative field names
-    if (json.containsKey('chapters') && json['chapters'] is List) {
-      for (var chapter in json['chapters']) {
-        if (chapter.containsKey('hadiths') && chapter['hadiths'] is List) {
-          for (var hadithJson in chapter['hadiths']) {
-            hadiths.add(Hadith.fromJson(hadithJson));
+      // 3. Determine Structure
+      if (data is List) {
+        // CASE A: Flat List (e.g. Sahih Bukhari, Sunan Abi Dawud)
+        hadiths = data.map((item) => Hadith.fromJson(item)).toList();
+      } else if (data is Map<String, dynamic>) {
+        // CASE B: Nested Object (e.g. Riyad as-Salihin, Musnad Ahmed)
+        
+        // Check for 'hadiths' array
+        if (data.containsKey('hadiths') && data['hadiths'] is List) {
+          hadiths = (data['hadiths'] as List)
+              .map((item) => Hadith.fromJson(item))
+              .toList();
+        } 
+        // Check for 'chapters' array (sometimes hadiths are inside chapters)
+        else if (data.containsKey('chapters') && data['chapters'] is List) {
+          for (var chapter in data['chapters']) {
+            if (chapter is Map && chapter.containsKey('hadiths')) {
+              var chapterHadiths = (chapter['hadiths'] as List)
+                  .map((item) => Hadith.fromJson(item))
+                  .toList();
+              hadiths.addAll(chapterHadiths);
+            }
           }
         }
       }
-    } else if (json.containsKey('hadiths') && json['hadiths'] is List) {
-      for (var hadithJson in json['hadiths']) {
-        hadiths.add(Hadith.fromJson(hadithJson));
-      }
-    }
 
-    return hadiths;
-  }
-
-  /// Parsing function for normal books
-  List<Hadith> parseNormalBook(List<dynamic> json) {
-    final List<Hadith> hadiths = [];
-
-    for (var hadithJson in json) {
-      if (hadithJson is Map<String, dynamic>) {
-        hadiths.add(Hadith.fromJson(hadithJson));
-      }
-    }
-
-    return hadiths;
-  }
-
-  /// Helper function to get the JSON path for a book
-  String _getJsonPath(String bookName) {
-    return 'assets/content/$bookName';
-  }
-
-  /// Entry function to load a hadith book
-  Future<List<Hadith>> loadHadithBook(String bookName) async {
-    try {
-      // Load JSON file
-      final String jsonString = await rootBundle.loadString(_getJsonPath(bookName));
-      final dynamic jsonData = json.decode(jsonString);
-
-      // Check if the book is special and parse accordingly
-      if (isSpecialBook(bookName)) {
-        return parseSpecialBook(jsonData);
-      } else {
-        return parseNormalBook(jsonData);
-      }
+      return hadiths;
     } catch (e) {
-      print('Error loading hadith book: $e');
+      print('Error loading hadith book ($jsonPath): $e');
       return [];
     }
   }

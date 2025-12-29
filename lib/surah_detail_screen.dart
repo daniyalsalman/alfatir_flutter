@@ -1,4 +1,4 @@
-// lib/screens/surah_detail_screen.dart
+// lib/surah_detail_screen.dart
 
 import 'package:flutter/material.dart';
 import '../models/surah.dart';
@@ -14,11 +14,11 @@ class SurahDetailScreen extends StatefulWidget {
 }
 
 class _SurahDetailScreenState extends State<SurahDetailScreen> {
+  final QuranService _quranService = QuranService();
   String selectedLang = 'en';
   Surah? mergedSurah;
   bool loading = false;
 
-  // All language options you listed
   final translationOptions = const [
     DropdownMenuItem(value: "en", child: Text("English")),
     DropdownMenuItem(value: "ur", child: Text("Urdu")),
@@ -35,7 +35,7 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _loadTranslation(); // load default translation on start
+    _loadTranslation();
   }
 
   Future<void> _loadTranslation() async {
@@ -44,25 +44,24 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
       mergedSurah = null;
     });
 
-    // Arabic file path where your base Arabic is stored (adjust if different)
-    // We already have the arabic Surah as widget.arabicSurah, so just load translation
     final path = 'assets/content/quran_$selectedLang.json';
 
     try {
-      final translations = await loadQuranFile(path);
+      final translations = await _quranService.loadQuranFile(path);
+      
       final translatedSurah = translations.firstWhere(
         (s) => s.id == widget.arabicSurah.id,
-        orElse: () => widget.arabicSurah, // fallback to arabic if missing
+        orElse: () => widget.arabicSurah,
       );
 
-      final merged = mergeSurahs(widget.arabicSurah, translatedSurah);
+      final merged = _quranService.mergeSurahs(widget.arabicSurah, translatedSurah);
 
       setState(() {
         mergedSurah = merged;
         loading = false;
       });
     } catch (e) {
-      // if anything fails (file missing, parse error) -> fallback to arabic only
+      print("Error loading translation: $e");
       setState(() {
         mergedSurah = widget.arabicSurah;
         loading = false;
@@ -72,6 +71,9 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Determine if we are in dark mode to adjust card colors if needed
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.arabicSurah.name} • ${widget.arabicSurah.transliteration}'),
@@ -80,6 +82,9 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: DropdownButton<String>(
               value: selectedLang,
+              dropdownColor: Theme.of(context).primaryColor,
+              style: const TextStyle(color: Colors.white),
+              iconEnabledColor: Colors.white,
               underline: const SizedBox(),
               items: translationOptions,
               onChanged: (val) async {
@@ -93,48 +98,56 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
       ),
       body: loading
           ? const Center(child: CircularProgressIndicator())
-          : mergedSurah == null
-              ? const Center(child: Text('No data'))
-              : ListView.builder(
-                  padding: const EdgeInsets.all(12),
-                  itemCount: mergedSurah!.verses.length,
-                  itemBuilder: (context, index) {
-                    final v = mergedSurah!.verses[index];
-                    return Card(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      child: Padding(
-                        padding: const EdgeInsets.all(14),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            // Arabic line (right aligned)
-                            Text(
-                              v.text,
-                              textAlign: TextAlign.right,
-                              style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-
-                            const SizedBox(height: 10),
-
-                            // Translation (left aligned)
-                            Text(
-                              v.translation ?? '',
-                              textAlign: TextAlign.left,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey,
-                                height: 1.4,
-                              ),
-                            ),
-                          ],
+          : ListView.builder(
+              padding: const EdgeInsets.all(12),
+              itemCount: (mergedSurah ?? widget.arabicSurah).verses.length,
+              itemBuilder: (context, index) {
+                final v = (mergedSurah ?? widget.arabicSurah).verses[index];
+                return Card(
+                  // In dark mode, Flutter cards are dark grey by default. 
+                  // We ensure elevation helps separate them.
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Arabic Text
+                        Text(
+                          v.text,
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Amiri',
+                            // Use standard title color (adapts to mode)
+                            color: Theme.of(context).textTheme.titleLarge?.color, 
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                        
+                        if (v.translation != null) ...[
+                          const SizedBox(height: 12),
+                          const Divider(),
+                          const SizedBox(height: 8),
+                          // Translation Text
+                          Text(
+                            v.translation!,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 16,
+                              height: 1.4,
+                              // FIX: Removed Colors.black87
+                              // Use body color (adapts to mode)
+                              color: Theme.of(context).textTheme.bodyMedium?.color, 
+                            ),
+                          ),
+                        ]
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
     );
   }
 }

@@ -1,100 +1,66 @@
 import 'package:flutter/material.dart';
-import 'app_routes.dart';
-import 'auth_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:alfatir_proj/auth_service.dart';
+import 'package:alfatir_proj/app_routes.dart';
+import 'package:alfatir_proj/main.dart'; // <--- IMPORT MAIN.DART
 
-import 'main.dart';
-
-
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
-
-  @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
-  void _logout() async {
-    await authService.value.signOut();
-    Navigator.pushReplacementNamed(context, AppRoutes.login);
-  }
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
+    // Determine current user details (placeholder or from Auth)
+    final user = authService.value.currentUser;
+    final email = user?.email ?? "Guest User";
 
     return Scaffold(
       appBar: AppBar(title: const Text('Profile')),
-      body: user == null
-          ? const Center(child: Text('No user logged in'))
-          : StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('Users')
-            .doc(user.uid)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (!snapshot.hasData || !snapshot.data!.exists) {
-            return const Center(child: Text('Profile data not found'));
-          }
-
-          final data =
-          snapshot.data!.data() as Map<String, dynamic>;
-
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'First Name: ${data['firstName']}',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 8),
-
-                Text(
-                  'Last Name: ${data['lastName']}',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 8),
-
-                Text(
-                  'Age: ${data['age']}',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 16),
-
-                Text(
-                  'Email: ${user.email}',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 16),
-
-
-                SwitchListTile(
-                  title: const Text('Dark Mode'),
-                  value: themeNotifier.value == ThemeMode.dark,
-                  onChanged: (value) {
-                    themeNotifier.value =
-                    value ? ThemeMode.dark : ThemeMode.light;
-                  },
-                ),
-
-
-                const SizedBox(height: 32),
-
-                ElevatedButton(
-                  onPressed: _logout,
-                  child: const Text('Logout'),
-                ),
-              ],
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          const CircleAvatar(
+            radius: 50,
+            child: Icon(Icons.person, size: 50),
+          ),
+          const SizedBox(height: 20),
+          Center(
+            child: Text(
+              email,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-          );
-        },
+          ),
+          const SizedBox(height: 30),
+          const Divider(),
+          
+          // --- THEME SWITCH ---
+          // Use ValueListenableBuilder so the switch updates visually when pressed
+          ValueListenableBuilder<ThemeMode>(
+            valueListenable: themeNotifier, // Accessing the global variable
+            builder: (context, mode, child) {
+              return SwitchListTile(
+                title: const Text('Dark Mode'),
+                // Check if current mode is Dark
+                value: mode == ThemeMode.dark, 
+                onChanged: (val) {
+                  // Update the global notifier
+                  themeNotifier.value = val ? ThemeMode.dark : ThemeMode.light;
+                },
+              );
+            },
+          ),
+          
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: const Text('Logout', style: TextStyle(color: Colors.red)),
+            onTap: () async {
+              await authService.value.signOut();
+              if (context.mounted) {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, AppRoutes.initialAuth, (route) => false);
+              }
+            },
+          ),
+        ],
       ),
     );
   }

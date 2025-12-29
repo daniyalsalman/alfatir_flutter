@@ -54,6 +54,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 validator: (value) => value!.isEmpty ? 'Password cannot be empty' : null,
               ),
               const SizedBox(height: 32),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.forgotPassword);
+                  },
+                  child: const Text('Forgot Password?'),
+                ),
+              ),
               ElevatedButton(
                 onPressed: _login,
                 child: const Text('Login'),
@@ -64,6 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 child: const Text("Don't have an account? Sign Up"),
               ),
+        
             ],
           ),
         ),
