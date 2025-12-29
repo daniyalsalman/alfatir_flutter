@@ -173,7 +173,8 @@ flutter run
 
 | Home Dashboard | Quran Reader | AI Chatbot |
 | --- | --- | --- |
-| *(Place screenshot here)* | *(Place screenshot here)* | *(Place screenshot here)* |
+| ![Alt text for the screenshot](assets/images/image.png)
+ | *(Place screenshot here)* | *(Place screenshot here)* |
 
 | Prayer Times | Qibla Compass | Zakat Calc |
 | --- | --- | --- |
