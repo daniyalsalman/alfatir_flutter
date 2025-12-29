@@ -173,12 +173,15 @@ flutter run
 
 | Home Dashboard | Quran Reader | AI Chatbot |
 | --- | --- | --- |
-| ![Alt text for the screenshot](assets/images/Home Page.png)
- | *(Place screenshot here)* | *(Place screenshot here)* |
+| ![Home Page](assets/images/Home.png) | ![Quran Reader](assets/images/Quran.png) | ![AI Chatbot](assets/images/AI.png) |
 
-| Prayer Times | Qibla Compass | Zakat Calc |
+| Prayer Times | 99 Names of Allah | Zakat Calc |
 | --- | --- | --- |
-| *(Place screenshot here)* | *(Place screenshot here)* | *(Place screenshot here)* |
+| ![Prayer Times](assets/images/Prayer.png) | ![99 Names of Allah](assets/images/99Names.png) | ![Zakat](assets/images/Zakat.png) |
+
+| Hadith Reader | Hijri Calendar | Tasbeeh Counter |
+| --- | --- | --- |
+| ![Hadith Reader](assets/images/Hadith.png) | ![Hijri Calender](assets/images/Hijri.png) | ![Tasbeeh Counter](assets/images/Tasbeeh.png) |
 
 ---
 
