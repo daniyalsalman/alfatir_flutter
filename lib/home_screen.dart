@@ -141,7 +141,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           _buildDrawerItem(context, Icons.home, 'Home', () => Navigator.pop(context)),
-          _buildDrawerItem(context, Icons.settings, 'Settings', () {}),
+          _buildDrawerItem(context, Icons.settings, 'Settings', () { Navigator.pushNamed(context, AppRoutes.profile); }),
           const Divider(),
           _buildDrawerItem(context, Icons.logout, 'Logout', () {
              Navigator.pushNamedAndRemoveUntil(context, AppRoutes.initialAuth, (route) => false);
